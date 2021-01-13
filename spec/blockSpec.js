@@ -9,7 +9,7 @@ describe("A block", function () {
             .then(block => block.validate())
             .then(result => expect(result).toBe(true, "block should be valid"));
     });
-    it("invalidates tampered block", function() {
+    it("invalidates tampered block", function () {
         let block = new BlockClass.Block({some: "dataa"});
         block.hash = SHA256("hi");
         return block.validate()

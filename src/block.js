@@ -9,6 +9,7 @@
  *  run asynchronous.
  */
 
+const encHex = require('crypto-js/enc-hex');
 const SHA256 = require('crypto-js/sha256');
 const hex2ascii = require('hex2ascii');
 
@@ -43,7 +44,16 @@ class Block {
             self.hash = null;
             const actualHash = SHA256(JSON.stringify(self));
             self.hash = currentHash;
-            resolve(currentHash === actualHash);
+            resolve(currentHash.toString(encHex) === actualHash.toString(encHex));
+        });
+    }
+
+    setHash() {
+        let self = this;
+        return new Promise((resolve, reject) => {
+            self.hash = null;
+            self.hash = SHA256(JSON.stringify(self));
+            resolve(self);
         });
     }
 
