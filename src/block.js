@@ -9,6 +9,7 @@
  *  run asynchronous.
  */
 
+const Buffer = require('buffer').Buffer;
 const encHex = require('crypto-js/enc-hex');
 const SHA256 = require('crypto-js/sha256');
 const hex2ascii = require('hex2ascii');
@@ -19,7 +20,7 @@ class Block {
     constructor(data) {
         this.hash = null;                                           // Hash of the block
         this.height = 0;                                            // Block Height (consecutive number of each block)
-        this.body = Buffer(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
+        this.body = Buffer.from(JSON.stringify(data)).toString('hex');   // Will contain the transactions stored in the block, by default it will encode the data
         this.time = 0;                                              // Timestamp for the Block creation
         this.previousBlockHash = null;                              // Reference to the previous Block Hash
     }
@@ -38,7 +39,7 @@ class Block {
      */
     validate() {
         let self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             // Save in auxiliary variable the current block hash
             const currentHash = self.hash;
             self.hash = null;
@@ -50,7 +51,7 @@ class Block {
 
     setHash() {
         let self = this;
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
             self.hash = null;
             self.hash = SHA256(JSON.stringify(self));
             resolve(self);
@@ -71,7 +72,7 @@ class Block {
         let self = this;
         return new Promise((resolve, reject) => {
             if (self.previousBlockHash === null) {
-                reject("genesis block");
+                reject('genesis block');
             }
             resolve(JSON.parse(hex2ascii(this.body)));
 
