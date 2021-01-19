@@ -14,6 +14,10 @@ const encHex = require('crypto-js/enc-hex');
 const SHA256 = require('crypto-js/sha256');
 const hex2ascii = require('hex2ascii');
 
+function hashObj(obj) {
+    return SHA256(JSON.stringify(obj)).toString(encHex);
+}
+
 class Block {
 
     // Constructor - argument data will be the object containing the transaction data
@@ -43,9 +47,9 @@ class Block {
             // Save in auxiliary variable the current block hash
             const currentHash = self.hash;
             self.hash = null;
-            const actualHash = SHA256(JSON.stringify(self));
+            const actualHash = hashObj(self);
             self.hash = currentHash;
-            resolve(currentHash.toString(encHex) === actualHash.toString(encHex));
+            resolve(currentHash === actualHash);
         });
     }
 
@@ -53,7 +57,7 @@ class Block {
         let self = this;
         return new Promise(resolve => {
             self.hash = null;
-            self.hash = SHA256(JSON.stringify(self));
+            self.hash = hashObj(self);
             resolve(self);
         });
     }
